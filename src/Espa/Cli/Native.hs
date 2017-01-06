@@ -1,7 +1,7 @@
 module Espa.Cli.Native where
 
 #include <haskell>
-import Paths_esp_assembler
+import Paths_necromancy_tool
 import Control.Error.Extensions
 import Data.Tes3
 import Data.Tes3.Disassembler
