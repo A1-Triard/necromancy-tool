@@ -5,7 +5,12 @@ cd test_data
 if [ \! -e "Data Files/Aleanne Armor and Clothes 1+2.esp" ]; then
   wget -O ale-clothing-v1-1c.7z 'http://www.fullrest.ru/files/ale-clothing-v1-1c/files?fid=2379' || exit 1
   7z x ale-clothing-v1-1c.7z || exit 1
-  rm -rf *.txt *.htm *.7z files
+  rm -rf *.txt *.htm *.7z files "Data Files/*.bsa"
+fi
+if [ \! -e "Data Files/Glass_Extension 1С.esp" ]; then
+  wget -O GlassExtension_1C.rar 'http://www.fullrest.ru/uploads/files/GlassExtension_1C.rar' || exit 1
+  unrar x -y GlassExtension_1C.rar || exit 1
+  rm -rf *.htm *.rar files "Data Files/Icons" "Data Files/Meshes" "Data Files/Textures"
 fi
 if [ \! -e "Data Files/Morrowind.esm" ]; then
   echo "Put Morrowind.esm into test_data/Data Files"

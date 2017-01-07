@@ -74,6 +74,9 @@ necroInitErrorText e
   | otherwise = ioeGetErrorString e
 
 #ifdef mingw32_HOST_OS
+dir :: String
+dir = "\\"
+
 getFullPath :: Maybe String -> FilePath -> FilePath
 getFullPath Nothing path = path
 getFullPath (Just game_dir) path =
@@ -87,6 +90,9 @@ getFullPath (Just game_dir) path =
     removeTrailingBackslashes s =
       fromMaybe "" $ listToMaybe $ dropWhile (endswith "\\") $ iterate (\x -> take (length x - 1) x) s
 #else
+dir :: String
+dir = "/"
+
 getFullPath :: Maybe String -> FilePath -> FilePath
 getFullPath Nothing path = path
 getFullPath (Just game_dir) path
@@ -110,16 +116,35 @@ catchIniParserError (_, loc) = userError $ "Unknown error while parsing Morrrowi
 gameFilesSection :: String
 gameFilesSection = "Game Files"
 
-necroInitRun :: Maybe String -> ExceptT IOError IO ()
-necroInitRun game_dir = do
+dataFiles :: String
+dataFiles = "Data Files" ++ dir
+
+data GameFile = GameFile
+  { fileName :: String
+  , fileTime :: UTCTime
+  }
+
+getGameFiles :: Maybe String -> ExceptT IOError IO [String]
+getGameFiles game_dir = do
   let ini_path = getFullPath game_dir "Morrowind.ini"
   bracketE (tryIO $ openFile ini_path ReadMode) (tryIO . hClose) $ \ini_file -> do
     tryIO $ hSetEncoding ini_file char8
     ini <- withExceptT catchIniParserError $ (hoistEither =<<) $ lift $ CF.readhandle CF.emptyCP { CF.optionxform = id } ini_file
     ini_files <- withExceptT catchIniParserError $ hoistEither $ CF.options ini gameFilesSection
     raw_files <- forM ini_files $ withExceptT catchIniParserError . hoistEither . CF.simpleAccess ini gameFilesSection
-    let files = [fromCP1251 f | f <- raw_files]
-    tryIO $ putStrLn $ intercalate "\n" files
+    return [fromCP1251 f | f <- raw_files]
+
+getGameFileData :: Maybe String -> String -> ExceptT IOError IO GameFile
+getGameFileData game_dir file_name = do
+  m <- tryIO $ getModificationTime $ getFullPath game_dir $ dataFiles ++ file_name
+  return $ GameFile file_name m
+
+necroInitRun :: Maybe String -> ExceptT IOError IO ()
+necroInitRun game_dir = do
+  file_names <- getGameFiles game_dir
+  files <- forM file_names $ getGameFileData game_dir
+  let ordered_files = sortOn fileTime files
+  tryIO $ putStrLn $ intercalate "\n" [fileName f | f <- ordered_files]
 
 
 {-
