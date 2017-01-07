@@ -85,6 +85,7 @@ library
                , data-binary-ieee754
                , zlib
                , tes3
+               , ConfigFile
   ghc-options: -fmax-pmcheck-iterations=10000000 -O2 -Wall -Werror -fno-warn-unused-imports
   default-language: Haskell2010
 

@@ -1,4 +1,4 @@
-test_data/
+*.bsa
 *.esp
 *.esm
 *.ess

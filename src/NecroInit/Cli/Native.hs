@@ -95,10 +95,24 @@ getFullPath (Just game_dir) path
   | otherwise = game_dir ++ "/" ++ path
 #endif
 
+catchIniParserError :: CF.CPError -> IOError
+catchIniParserError (CF.ParseError s, loc) = userError $ "Invalid Morrrowind.ini (" ++ s ++ ", " ++ loc ++ ")."
+catchIniParserError (CF.NoSection s, loc) = userError $ "Cannot find section " ++ s ++ " in Morrrowind.ini (" ++ loc ++ ")."
+catchIniParserError (CF.NoOption s, loc) = userError $ "Cannot find option " ++ s ++ " in Morrrowind.ini (" ++ loc ++ ")."
+catchIniParserError (_, loc) = userError $ "Unknown error while parsing Morrrowind.ini (" ++ loc ++ ")."
+
+gameFilesSection :: String
+gameFilesSection = "Game Files"
+
 necroInitRun :: Maybe String -> ExceptT IOError IO ()
 necroInitRun game_dir = do
-    let ini_path = getFullPath game_dir "Morrowind.ini"
-    tryIO $ putStrLn ini_path
+  let ini_path = getFullPath game_dir "Morrowind.ini"
+  bracketE (tryIO $ openFile ini_path ReadMode) (tryIO . hClose) $ \ini_file -> do
+    tryIO $ hSetEncoding ini_file char8
+    ini <- withExceptT catchIniParserError $ (hoistEither =<<) $ lift $ CF.readhandle CF.emptyCP { CF.optionxform = id } ini_file
+    ini_files <- withExceptT catchIniParserError $ hoistEither $ CF.options ini gameFilesSection
+    files <- forM ini_files $ withExceptT catchIniParserError . hoistEither . CF.simpleAccess ini gameFilesSection
+    tryIO $ putStrLn $ intercalate "\n" files
 
 
 
