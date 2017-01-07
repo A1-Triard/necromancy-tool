@@ -73,6 +73,7 @@ necroInitErrorText e
   | isDoesNotExistError e = fromMaybe "" (ioeGetFileName e) ++ ": No such file or directory"
   | otherwise = ioeGetErrorString e
 
+#ifdef mingw32_HOST_OS
 getFullPath :: Maybe String -> FilePath -> FilePath
 getFullPath Nothing path = path
 getFullPath (Just game_dir) path =
@@ -85,6 +86,14 @@ getFullPath (Just game_dir) path =
       | otherwise = s
     removeTrailingBackslashes s =
       fromMaybe "" $ listToMaybe $ dropWhile (endswith "\\") $ iterate (\x -> take (length x - 1) x) s
+#else
+getFullPath :: Maybe String -> FilePath -> FilePath
+getFullPath Nothing path = path
+getFullPath (Just game_dir) path
+  | null game_dir = path
+  | game_dir == "/" = "/" ++ path
+  | otherwise = game_dir ++ "/" ++ path
+#endif
 
 necroInitRun :: Maybe String -> ExceptT IOError IO ()
 necroInitRun game_dir = do
