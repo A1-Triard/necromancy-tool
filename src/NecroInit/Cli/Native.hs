@@ -95,6 +95,12 @@ getFullPath (Just game_dir) path
   | otherwise = game_dir ++ "/" ++ path
 #endif
 
+fromCP1251 :: String -> String
+fromCP1251 =
+  map (\c -> fromMaybe c $ lookup c table)
+  where
+    table = zip ['\192'..'\255'] ['А'..'я']
+
 catchIniParserError :: CF.CPError -> IOError
 catchIniParserError (CF.ParseError s, loc) = userError $ "Invalid Morrrowind.ini (" ++ s ++ ", " ++ loc ++ ")."
 catchIniParserError (CF.NoSection s, loc) = userError $ "Cannot find section " ++ s ++ " in Morrrowind.ini (" ++ loc ++ ")."
@@ -111,10 +117,9 @@ necroInitRun game_dir = do
     tryIO $ hSetEncoding ini_file char8
     ini <- withExceptT catchIniParserError $ (hoistEither =<<) $ lift $ CF.readhandle CF.emptyCP { CF.optionxform = id } ini_file
     ini_files <- withExceptT catchIniParserError $ hoistEither $ CF.options ini gameFilesSection
-    files <- forM ini_files $ withExceptT catchIniParserError . hoistEither . CF.simpleAccess ini gameFilesSection
+    raw_files <- forM ini_files $ withExceptT catchIniParserError . hoistEither . CF.simpleAccess ini gameFilesSection
+    let files = [fromCP1251 f | f <- raw_files]
     tryIO $ putStrLn $ intercalate "\n" files
-
-
 
 
 {-
