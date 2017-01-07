@@ -124,6 +124,23 @@ data GameFile = GameFile
   , fileTime :: UTCTime
   }
 
+isMasterFile :: GameFile -> Bool
+isMasterFile = endswith ".esm" . map toLower . fileName
+
+isPluginFile :: GameFile -> Bool
+isPluginFile = endswith ".esp" . map toLower . fileName
+
+instance Eq GameFile where
+  a == b = fileName a == fileName b
+
+instance Ord GameFile where
+  a <= b
+    | isMasterFile a && isPluginFile b = True
+    | isPluginFile a && isMasterFile b = False
+    | fileTime a < fileTime b = True
+    | fileTime a > fileTime b = False
+    | otherwise = fileName a <= fileName b
+
 getGameFiles :: Maybe String -> ExceptT IOError IO [String]
 getGameFiles game_dir = do
   let ini_path = getFullPath game_dir "Morrowind.ini"
@@ -142,9 +159,8 @@ getGameFileData game_dir file_name = do
 necroInitRun :: Maybe String -> ExceptT IOError IO ()
 necroInitRun game_dir = do
   file_names <- getGameFiles game_dir
-  files <- forM file_names $ getGameFileData game_dir
-  let ordered_files = sortOn fileTime files
-  tryIO $ putStrLn $ intercalate "\n" [fileName f | f <- ordered_files]
+  files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
+  tryIO $ putStrLn $ intercalate "\n" [fileName f | f <- files]
 
 
 {-
