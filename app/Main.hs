@@ -1,6 +1,6 @@
 module Main where
 
-import Espa.Cli
+import NecroInit.Cli
 
 main :: IO ()
-main = espa
+main = necroInit
