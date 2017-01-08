@@ -4,8 +4,7 @@ module NecroInit.Cli.Native where
 import Paths_necromancy_tool
 import Control.Error.Extensions
 import Data.Tes3
-import Data.Tes3.Disassembler
-import Data.Tes3.Assembler
+import Data.Tes3.Get
 
 necroInitHelpHeader :: String
 necroInitHelpHeader
@@ -119,6 +118,12 @@ gameFilesSection = "Game Files"
 dataFiles :: String
 dataFiles = "Data Files" ++ dir
 
+npcsDir :: String
+npcsDir = dataFiles ++ "NPCs"
+
+npcsFiles :: String
+npcsFiles = npcsDir ++ dir
+
 data GameFile = GameFile
   { fileName :: String
   , fileTime :: UTCTime
@@ -160,8 +165,82 @@ necroInitRun :: Maybe String -> ExceptT IOError IO ()
 necroInitRun game_dir = do
   file_names <- getGameFiles game_dir
   files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
-  tryIO $ putStrLn $ intercalate "\n" [fileName f | f <- files]
+  tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
+  forM_ files $ \file -> do
+    let file_path = getFullPath game_dir (fileName file)
+    bracketE (tryIO $ openBinaryFile file_path ReadMode) (tryIO . hClose) $ \h -> do
+      (a, b) <- runConduit $ (N.sourceHandle h =$= t3RecordsSource (fileName file)) `fuseBoth` t3RecordsSink game_dir
+      case (a, b) of
+        (Nothing, Nothing) -> return ()
+        (Just e, _) -> throwE e
+        (_, Just e) -> throwE e
 
+t3RecordsSink :: MonadIO m => Maybe String -> ConduitM T3Record Void m (Maybe IOError)
+t3RecordsSink game_dir =
+  go
+  where
+  go = do
+    inp <- await
+    case inp of
+      Nothing -> return Nothing
+      Just (T3Record (T3Mark NPC_) _ fields) -> do
+        case catMaybes $ map asName fields of
+          (n : _) -> do
+            let file_path = getFullPath game_dir $ npcsFiles ++ T.unpack n
+            e <- liftIO $ tryIOError $ writeFile file_path $ T.unpack n
+            case e of
+              Left r -> return $ Just r
+              Right _ -> go
+          [] -> go
+      _ -> go
+  asName (T3StringField (T3Mark NAME) n) = Just n
+  asName _ = Nothing
+
+t3RecordsSource :: Monad m => String -> ConduitM S.ByteString T3Record m (Maybe IOError)
+t3RecordsSource file_name = do
+  r1 <- skipGet file_name 0 getT3FileSignature
+  case r1 of
+    Left e -> return $ Just e
+    Right offset1 -> do
+      r2 <- skipGet file_name offset1 getT3FileHeader
+      case r2 of
+        Left e -> return $ Just e
+        Right offset2 -> do
+          go $ runGetIncremental offset2 $ getT3Record False
+  where
+    go (G.Partial p) = do
+      inp <- await
+      go $ p inp
+    go (G.Done unused offset result) = do
+      if SB.null unused
+        then return ()
+        else leftover unused
+      yield result
+      end <- N.null
+      if end
+        then return Nothing
+        else go $ runGetIncremental offset $ getT3Record False
+    go (G.Fail _ offset err) = do
+      return $ Just $ formatError file_name offset err
+
+skipGet :: Monad m => String -> ByteOffset -> Get String a -> ConduitM S.ByteString r m (Either IOError ByteOffset)
+skipGet file_name base_offset g = do
+  go $ runGetIncremental base_offset g
+  where
+    go (G.Partial p) = do
+      inp <- await
+      go $ p inp
+    go (G.Done unused offset _) = do
+      if SB.null unused
+        then return ()
+        else leftover unused
+      return $ Right offset
+    go (G.Fail _ offset err) = do
+      return $ Left $ formatError file_name offset err
+
+formatError :: String -> ByteOffset -> Either String String -> IOError
+formatError name offset (Right e) = userError $ name ++ ": " ++ replace "{0}" (showHex offset "h") e
+formatError name offset (Left e) = userError $ name ++ ": " ++ "Internal error: " ++ showHex offset "h: " ++ e
 
 {-
 withBinaryInputFile :: FilePath -> (Handle -> ExceptT IOError IO a) -> ExceptT IOError IO a

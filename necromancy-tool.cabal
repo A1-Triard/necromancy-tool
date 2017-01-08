@@ -16,12 +16,6 @@ cabal-version:       >=1.10
 library
   hs-source-dirs: src
   exposed-modules: Control.Error.Extensions
-                 , Data.Tes3.Disassembler
-                 , Data.Tes3.Disassembler.Native
-                 , Data.Tes3.Parser
-                 , Data.Tes3.Parser.Native
-                 , Data.Tes3.Assembler
-                 , Data.Tes3.Assembler.Native
                  , NecroInit.Cli
                  , NecroInit.Cli.Native
   other-modules: Paths_necromancy_tool
