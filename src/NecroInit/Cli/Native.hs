@@ -167,7 +167,7 @@ necroInitRun game_dir = do
   files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
   tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
   forM_ files $ \file -> do
-    let file_path = getFullPath game_dir (fileName file)
+    let file_path = getFullPath game_dir (dataFiles ++ fileName file)
     bracketE (tryIO $ openBinaryFile file_path ReadMode) (tryIO . hClose) $ \h -> do
       (a, b) <- runConduit $ (N.sourceHandle h =$= t3RecordsSource (fileName file)) `fuseBoth` t3RecordsSink game_dir
       case (a, b) of
@@ -193,7 +193,7 @@ t3RecordsSink game_dir =
               Right _ -> go
           [] -> go
       _ -> go
-  asName (T3StringField (T3Mark NAME) n) = Just n
+  asName (T3StringField (T3Mark NAME) n) = Just $ T.dropWhileEnd (== '\0') n
   asName _ = Nothing
 
 t3RecordsSource :: Monad m => String -> ConduitM S.ByteString T3Record m (Maybe IOError)

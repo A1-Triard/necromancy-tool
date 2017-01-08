@@ -17,6 +17,12 @@ if [ \! -e "Data Files/Morrowind.esm" ]; then
   exit 1
 fi
 
+rm -rf "Data Files/NPCs"
 stack exec -- A1_Necromancy_init || exit 1
+res=$(find "Data Files/NPCs" -type f | wc -l)
+if [ $res != 2676 ]; then
+  echo "$res"
+  exit 1
+fi
 
 echo "All tests passed."
