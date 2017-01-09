@@ -1,0 +1,769 @@
+3SET
+VERSION 1067869798
+TYPE ESP
+AUTHOR A1
+DESCRIPTION
+    Файл с париками, сгенерированный A1_Necromancy_init.exe.
+Morrowind.esm% 79764287
+Tribunal.esm% 6616539
+Bloodmoon.esm% 11799703
+
+BODY
+NAME A1V1_HairsBP_151
+MODL Aleanne\\aleanne_hair.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_150
+MODL b\\B_N_Imperial_F_Hair_07.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_149
+MODL b\\B_N_Imperial_F_Hair_06.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_148
+MODL b\\B_N_Wood Elf_M_Hair_06.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_147
+MODL b\\B_N_Dark Elf_M_Hair_09.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_146
+MODL b\\B_N_Argonian_F_Hair05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_145
+MODL b\\B_N_Dark Elf_F_Hair_08.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_144
+MODL b\\B_N_Argonian_M_Hair06.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_143
+MODL b\\B_N_Redguard_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_142
+MODL b\\B_N_Breton_M_Hair_00.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_141
+MODL b\\B_N_Argonian_F_Hair01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_140
+MODL b\\B_N_Breton_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_139
+MODL b\\B_N_Imperial_M_Hair_09.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_138
+MODL b\\B_N_Dark Elf_M_Hair_07.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_137
+MODL b\\B_N_Dark Elf_M_Hair_08.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_136
+MODL b\\B_N_Redguard_M_Hair_00.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_135
+MODL b\\B_N_Khajiit_M_Hair02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_134
+MODL b\\B_N_Argonian_M_Hair05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_133
+MODL b\\B_N_Imperial_F_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_132
+MODL b\\B_N_Argonian_F_Hair04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_131
+MODL b\\B_N_High Elf_M_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_130
+MODL b\\B_N_Redguard_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_129
+MODL b\\B_N_Redguard_F_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_128
+MODL b\\B_N_Imperial_M_Hair_06.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_127
+MODL b\\B_N_Dark Elf_M_Hair_12.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_126
+MODL b\\B_N_Nord_M_Hair04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_125
+MODL b\\B_N_Nord_M_Hair07.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_124
+MODL b\\B_N_Nord_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_123
+MODL b\\B_N_Breton_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_122
+MODL b\\B_N_Nord_M_Hair01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_121
+MODL b\\B_N_High Elf_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_120
+MODL b\\B_N_Redguard_M_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_119
+MODL b\\B_N_Dark Elf_M_Hair_20.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_118
+MODL b\\B_N_Dark Elf_F_Hair_09.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_117
+MODL b\\B_N_Dark Elf_F_Hair_06.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_116
+MODL b\\B_N_Wood Elf_M_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_115
+MODL b\\B_N_Wood Elf_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_114
+MODL b\\B_N_Wood Elf_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_113
+MODL b\\B_N_Dark Elf_M_Hair_24.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_112
+MODL b\\B_N_Dark Elf_F_Hair_21.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_111
+MODL b\\B_N_Redguard_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_110
+MODL b\\B_N_Dark Elf_F_Hair_17.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_109
+MODL b\\B_N_High Elf_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_108
+MODL b\\B_N_Khajiit_F_Hair02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_107
+MODL b\\B_N_Nord_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_106
+MODL b\\B_N_Breton_F_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_105
+MODL b\\B_N_High Elf_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_104
+MODL b\\B_N_Breton_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_103
+MODL b\\B_N_Imperial_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_102
+MODL b\\B_N_Argonian_F_Hair03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_101
+MODL b\\B_N_Dark Elf_M_Hair_25.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_100
+MODL b\\B_N_Khajiit_F_Hair03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_99
+MODL b\\B_N_Imperial_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_98
+MODL b\\B_N_Argonian_M_Hair01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_97
+MODL b\\B_N_Khajiit_M_Hair05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_96
+MODL b\\B_N_Khajiit_F_Hair05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_95
+MODL b\\B_N_Redguard_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_94
+MODL b\\B_N_High Elf_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_93
+MODL b\\B_N_Nord_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_92
+MODL b\\B_N_Argonian_F_Hair02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_91
+MODL b\\B_N_Redguard_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_90
+MODL b\\B_N_Argonian_M_Hair02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_89
+MODL b\\B_N_Redguard_M_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_88
+MODL b\\B_N_Wood Elf_M_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_87
+MODL b\\B_N_Nord_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_86
+MODL b\\B_N_Dark Elf_M_Hair_11.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_85
+MODL b\\B_N_Khajiit_M_Hair03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_84
+MODL b\\B_N_Khajiit_M_Hair04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_83
+MODL b\\B_N_Dark Elf_M_Hair_13.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_82
+MODL b\\B_N_Redguard_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_81
+MODL b\\B_N_Dark Elf_F_Hair_19.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_80
+MODL b\\B_N_Dark Elf_M_Hair_17.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_79
+MODL b\\B_N_Dark Elf_M_Hair_16.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_78
+MODL b\\B_N_Dark Elf_M_Hair_18.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_77
+MODL b\\B_N_Dark Elf_F_Hair_14.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_76
+MODL b\\B_N_Argonian_M_Hair03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_75
+MODL b\\B_N_Argonian_M_Hair04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_74
+MODL b\\B_N_Dark Elf_M_Hair_26.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_73
+MODL b\\B_N_Khajiit_F_Hair04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_72
+MODL b\\B_N_Khajiit_M_Hair01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_71
+MODL b\\B_N_Dark Elf_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_70
+MODL b\\B_N_Dark Elf_M_Hair_21.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_69
+MODL b\\B_N_Orc_F_Hair03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_68
+MODL b\\B_N_Nord_M_Hair00.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_67
+MODL b\\B_N_Nord_M_Hair05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_66
+MODL b\\B_N_Nord_M_Hair02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_65
+MODL b\\B_N_Dark Elf_M_Hair_22.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_64
+MODL b\\B_N_Dark Elf_M_Hair_06.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_63
+MODL b\\B_N_Wood Elf_F_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_62
+MODL b\\B_N_Wood Elf_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_61
+MODL b\\B_N_Dark Elf_F_Hair_22.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_60
+MODL b\\B_N_Dark Elf_F_Hair_12.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_59
+MODL b\\B_N_Dark Elf_F_Hair_18.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_58
+MODL b\\B_N_Dark Elf_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_57
+MODL b\\B_N_Nord_F_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_56
+MODL b\\B_N_Orc_F_Hair04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_55
+MODL b\\B_N_Dark Elf_M_Hair_19.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_54
+MODL b\\B_N_Khajiit_F_Hair01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_53
+MODL b\\B_N_Breton_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_52
+MODL b\\B_N_Imperial_M_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_51
+MODL b\\B_N_Dark Elf_F_Hair_23.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_50
+MODL b\\B_N_Dark Elf_M_Hair_10.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_49
+MODL b\\B_N_Dark Elf_F_Hair_10.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_48
+MODL b\\B_N_Dark Elf_M_Hair_15.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_47
+MODL b\\B_N_Dark Elf_F_Hair_13.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_46
+MODL b\\B_N_Orc_F_Hair01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_45
+MODL b\\B_N_Imperial_M_Hair_08.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_44
+MODL b\\B_N_Imperial_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_43
+MODL b\\B_N_Breton_M_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_42
+MODL b\\B_N_Orc_F_Hair02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_41
+MODL b\\B_N_Orc_M_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_40
+MODL b\\B_N_Orc_F_Hair05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_39
+MODL b\\B_N_Orc_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_38
+MODL b\\B_N_Imperial_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_37
+MODL b\\B_N_Imperial_M_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_36
+MODL b\\B_N_Orc_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_35
+MODL b\\B_N_Orc_M_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_34
+MODL b\\B_N_Orc_M_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_33
+MODL b\\B_N_Imperial_M_Hair_00.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_32
+MODL b\\B_N_Imperial_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_31
+MODL b\\B_N_Breton_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_30
+MODL b\\B_N_Dark Elf_F_Hair_11.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_29
+MODL b\\B_N_Wood Elf_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_28
+MODL b\\B_N_Dark Elf_M_Hair_23.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_27
+MODL b\\B_N_High Elf_M_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_26
+MODL b\\B_N_Dark Elf_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_25
+MODL b\\B_N_Dark Elf_F_Hair_15.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_24
+MODL b\\B_N_Dark Elf_M_Hair_03.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_23
+MODL b\\B_N_Wood Elf_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_22
+MODL b\\B_N_Breton_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_21
+MODL b\\B_N_Redguard_M_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_20
+MODL b\\B_N_Nord_M_Hair03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_19
+MODL b\\B_N_Dark Elf_F_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_18
+MODL b\\B_N_Breton_M_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_17
+MODL b\\B_N_High Elf_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_16
+MODL b\\B_N_High Elf_F_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_15
+MODL b\\B_N_Dark Elf_F_Hair_07.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_14
+MODL b\\B_N_Dark Elf_F_Hair_16.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_13
+MODL b\\B_N_Dark Elf_F_Hair_24.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_12
+MODL b\\B_N_Dark Elf_F_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_11
+MODL b\\B_N_Dark Elf_F_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_10
+MODL b\\B_N_Dark Elf_F_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_9
+MODL b\\B_N_Dark Elf_M_Hair_14.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_8
+MODL b\\B_N_Breton_M_Hair_01.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_7
+MODL b\\B_N_High Elf_M_Hair_02.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_6
+MODL b\\B_N_Wood Elf_M_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_5
+MODL b\\B_N_Dark Elf_F_Hair_20.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_4
+MODL b\\B_N_Dark Elf_M_Hair_02.NIF
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_3
+MODL b\\B_N_Imperial_M_Hair_04.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_2
+MODL b\\B_N_Wood Elf_M_Hair_05.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_1
+MODL b\\B_N_Imperial_M_Hair_03.nif
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_0
+MODL b\\B_N_Dark Elf_M_Hair_01.NIF
+BYDT AQAAAg==

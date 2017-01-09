@@ -31,4 +31,5 @@ if [ $size != 13837 ]; then
   echo $size
   exit 1
 fi
+espa -d "Data Files/A1V1_Hairs.esp" || exit 1
 echo "All tests passed."

@@ -234,13 +234,24 @@ generateHairsPlugin game_dir hs = do
     tryIO $ B.hPut h $ runPut $ putWord32le $ fromIntegral $ length records
   where
     makePlugin :: [T3Record] -> Int -> Text -> [T3Record]
-    makePlugin records i n = makeBodyPart i n : {-makeArmor i n `cons`-} records
+    makePlugin records i n = makeBodyPart i n : makeArmor i : records
     makeBodyPart :: Int -> Text -> T3Record
     makeBodyPart i n =
       T3Record (T3Mark BODY) 0
         [ T3StringField (T3Mark NAME) (T.pack $ hairsBodyPrefix ++ show i ++ ['\0'])
         , T3StringField (T3Mark MODL) (n `T.snoc` '\0')
         , T3BinaryField (T3Mark BYDT) (decodeLenient $ C.pack "AQAAAg==")
+        ]
+    makeArmor :: Int -> T3Record
+    makeArmor i =
+      T3Record (T3Mark ARMO) 0
+        [ T3StringField (T3Mark NAME) (T.pack $ hairsPrefix ++ show i ++ ['\0'])
+        , T3StringField (T3Mark MODL) "m\\misc_com_broom_01.nif\0"
+        , T3StringField (T3Mark FNAM) "Волосы\0"
+        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAM3MzD0AAAAAZAAAABkAAAAKAAAA")
+        , T3StringField (T3Mark ITEX) "m\\misc_com_broom_01.dds\0"
+        , T3ByteField (T3Mark INDX) 1
+        , T3StringField (T3Mark BNAM) (T.pack $ hairsBodyPrefix ++ show i)
         ]
 
 data Hairs = Hairs
