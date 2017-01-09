@@ -1,3 +1,4 @@
+{-# LANGUAGE ForeignFunctionInterface #-}
 module NecroInit.Cli.Native where
 
 #include <haskell>
@@ -6,6 +7,9 @@ import Control.Error.Extensions
 import Data.Tes3
 import Data.Tes3.Get
 import Data.Tes3.Put
+#ifdef mingw32_HOST_OS
+import Foreign.C.Types
+#endif
 
 necroInitHelpHeader :: String
 necroInitHelpHeader
@@ -89,6 +93,14 @@ getFullPath (Just game_dir) path =
       | otherwise = s
     removeTrailingBackslashes s =
       fromMaybe "" $ listToMaybe $ dropWhile (endswith "\\") $ iterate (\x -> take (length x - 1) x) s
+
+stop :: IO ()
+stop = do
+  putStrLn "Press any key..."
+  void $ c_getch
+
+foreign import ccall unsafe "conio.h getch"
+  c_getch :: IO CInt
 #else
 dir :: String
 dir = "/"
@@ -99,6 +111,9 @@ getFullPath (Just game_dir) path
   | null game_dir = path
   | game_dir == "/" = "/" ++ path
   | otherwise = game_dir ++ "/" ++ path
+
+stop :: IO ()
+stop = return ()
 #endif
 
 fromCP1251 :: String -> String
@@ -170,6 +185,7 @@ necroInitRun game_dir = do
   hr <- scanNPCs game_dir files
   hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
   generateHairsPlugin game_dir $ V.map (mapModl hm) hr
+  tryIO $ stop
   where
     mapModl :: Map Text (Maybe Text) -> Text -> Text
     mapModl m h =
