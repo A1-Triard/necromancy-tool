@@ -138,10 +138,10 @@ dataFiles :: String
 dataFiles = "Data Files" ++ dir
 
 npcsDir :: String
-npcsDir = dataFiles ++ "NPCs"
+npcsDir = dataFiles ++ "MWSE"
 
 npcsFiles :: String
-npcsFiles = npcsDir ++ dir
+npcsFiles = npcsDir ++ dir ++ "A1NPC_"
 
 data GameFile = GameFile
   { fileName :: String
@@ -182,13 +182,13 @@ getGameFileData game_dir file_name = do
 
 necroInitRun :: Maybe String -> String -> ExceptT IOError IO ()
 necroInitRun game_dir plugin_name = do
-  file_names <- getGameFiles game_dir
-  files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
-  tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
-  hr <- scanNPCs game_dir files
-  hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
-  generateHairsPlugin game_dir plugin_name $ V.map (mapModl hm) hr
-  tryIO $ stop
+  bracketE (return ()) (tryIO . const stop) $ \_ -> do
+    file_names <- getGameFiles game_dir
+    files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
+    tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
+    hr <- scanNPCs game_dir files
+    hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
+    generateHairsPlugin game_dir plugin_name $ V.map (mapModl hm) hr
   where
     mapModl :: Map Text (Maybe Text) -> Text -> Text
     mapModl m h =
