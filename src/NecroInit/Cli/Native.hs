@@ -27,6 +27,7 @@ necroInitUsageErrorFooter
 
 data NecroInitOptions = NecroInitOptions
   { optRootDir :: Maybe String
+  , optPlugin :: String
   , optShowVersion :: Bool
   , optShowHelp :: Bool
   }
@@ -34,6 +35,7 @@ data NecroInitOptions = NecroInitOptions
 defaultNecroInitOptions :: NecroInitOptions
 defaultNecroInitOptions = NecroInitOptions
   { optRootDir = Nothing
+  , optPlugin = "A1_Hairs_V1.esp"
   , optShowVersion = False
   , optShowHelp = False
   }
@@ -41,6 +43,7 @@ defaultNecroInitOptions = NecroInitOptions
 necroInitOptionsDescr :: [OptDescr (NecroInitOptions -> NecroInitOptions)]
 necroInitOptionsDescr =
   [ Option ['i'] ["install-path"] (ReqArg (\i o -> o {optRootDir = Just i}) "DIR") "the game install path"
+  , Option ['p'] ["plugin-name"] (ReqArg (\p o -> o {optPlugin = p}) "NAME") "the plugin file name"
   , Option ['V'] ["version"] (NoArg (\o -> o {optShowVersion = True})) "display the version number and exit"
   , Option ['h'] ["help"] (NoArg (\o -> o {optShowHelp = True})) "display this help and exit"
   ]
@@ -59,7 +62,7 @@ necroInit = do
       | optShowHelp options = putStrLn $ usageInfo necroInitHelpHeader necroInitOptionsDescr ++ necroInitHelpFooter
       | optShowVersion options = putStrLn $ "A1_Necromancy_init " ++ showVersion version
       | not $ null errors = hPutStrLn stderr $ concat errors ++ necroInitUsageErrorFooter
-      | otherwise = printErrorsAndExit necroInitErrorText $ necroInitRun (optRootDir options)
+      | otherwise = printErrorsAndExit necroInitErrorText $ necroInitRun (optRootDir options) (optPlugin options)
 
 printErrorsAndExit :: (e -> String) -> ExceptT e IO () -> IO ()
 printErrorsAndExit error_text action = do
@@ -177,14 +180,14 @@ getGameFileData game_dir file_name = do
   m <- tryIO $ getModificationTime $ getFullPath game_dir $ dataFiles ++ file_name
   return $ GameFile file_name m
 
-necroInitRun :: Maybe String -> ExceptT IOError IO ()
-necroInitRun game_dir = do
+necroInitRun :: Maybe String -> String -> ExceptT IOError IO ()
+necroInitRun game_dir plugin_name = do
   file_names <- getGameFiles game_dir
   files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
   tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
   hr <- scanNPCs game_dir files
   hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
-  generateHairsPlugin game_dir $ V.map (mapModl hm) hr
+  generateHairsPlugin game_dir plugin_name $ V.map (mapModl hm) hr
   tryIO $ stop
   where
     mapModl :: Map Text (Maybe Text) -> Text -> Text
@@ -224,9 +227,9 @@ scanBodyParts game_dir files p =
           (_, Left e) -> throwE e
       go tail hr
 
-generateHairsPlugin :: Maybe String -> Vector Text -> ExceptT IOError IO ()
-generateHairsPlugin game_dir hs = do
-  let file_path = getFullPath game_dir $ dataFiles ++ "A1V1_Hairs.esp"
+generateHairsPlugin :: Maybe String -> String -> Vector Text -> ExceptT IOError IO ()
+generateHairsPlugin game_dir plugin_name hs = do
+  let file_path = getFullPath game_dir $ dataFiles ++ plugin_name
   let
     file_header = putT3FileHeader $ T3FileHeader
       1067869798

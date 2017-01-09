@@ -18,18 +18,18 @@ if [ \! -e "Data Files/Morrowind.esm" ]; then
 fi
 
 rm -rf "Data Files/NPCs"
-rm -f "Data Files/A1V1_Hairs.esp"
-dd if=/dev/zero of="Data Files/A1V1_Hairs.esp" bs=1 count=0 seek=100K
-stack exec -- A1_Necromancy_init || exit 1
+rm -f "Data Files/A1H.esp"
+dd if=/dev/zero of="Data Files/A1H.esp" bs=1 count=0 seek=100K
+stack exec -- A1_Necromancy_init -p A1H.esp || exit 1
 res=$(find "Data Files/NPCs" -type f | wc -l)
 if [ $res != 2676 ]; then
   echo "$res"
   exit 1
 fi
-size=$(wc -c < "Data Files/A1V1_Hairs.esp")
+size=$(wc -c < "Data Files/A1H.esp")
 if [ $size != 41433 ]; then
   echo $size
   exit 1
 fi
-espa -d "Data Files/A1V1_Hairs.esp" || exit 1
+espa -d "Data Files/A1H.esp" || exit 1
 echo "All tests passed."
