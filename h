@@ -1,0 +1,40 @@
+3SET
+VERSION 1067869798
+TYPE ESP
+AUTHOR 
+DESCRIPTION
+    
+Morrowind.esm 79764287
+Tribunal.esm 6616539
+Bloodmoon.esm 11799703
+Trib_BM_patch_1C.esm 23382
+
+BODY
+NAME A1V1_HairsBP_1
+MODL b\\B_N_Imperial_M_Hair_03.nif
+FNAM Imperial
+BYDT AQAAAg==
+
+BODY
+NAME A1V1_HairsBP_2
+MODL b\\B_N_Nord_F_Hair_04.nif
+FNAM Nord
+BYDT AQAAAg==
+
+ARMO
+NAME A1V1_Hairs_1
+MODL m\\misc_com_broom_01.nif
+FNAM Волосы
+AODT AAAAAM3MzD0AAAAAZAAAABkAAAAKAAAA
+ITEX m\\misc_com_broom_01.dds
+INDX 1
+BNAM A1V1_HairsBP_1%
+
+ARMO
+NAME A1V1_Hairs_2
+MODL m\\misc_com_broom_01.nif
+FNAM Волосы
+AODT AAAAAM3MzD0AAAAAZAAAABkAAAAKAAAA
+ITEX m\\misc_com_broom_01.dds
+INDX 1
+BNAM A1V1_HairsBP_2%
