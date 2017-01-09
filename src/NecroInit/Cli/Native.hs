@@ -169,30 +169,42 @@ necroInitRun game_dir = do
   forM_ files $ \file -> do
     let file_path = getFullPath game_dir (dataFiles ++ fileName file)
     bracketE (tryIO $ openBinaryFile file_path ReadMode) (tryIO . hClose) $ \h -> do
-      (a, b) <- runConduit $ (N.sourceHandle h =$= t3RecordsSource (fileName file)) `fuseBoth` t3RecordsSink game_dir
+      (a, b) <- runConduit $ (N.sourceHandle h =$= t3RecordsSource (fileName file)) `fuseBoth` t3RecordsSink game_dir (Hairs V.empty M.empty)
       case (a, b) of
-        (Nothing, Nothing) -> return ()
+        (Nothing, Right _) -> return ()
         (Just e, _) -> throwE e
-        (_, Just e) -> throwE e
+        (_, Left e) -> throwE e
 
-t3RecordsSink :: MonadIO m => Maybe String -> ConduitM T3Record Void m (Maybe IOError)
-t3RecordsSink game_dir =
-  go
+data Hairs = Hairs
+  { hairs :: Vector String
+  , hairsIndex :: Map String Int
+  }
+
+addHairs :: Hairs -> String -> (Int, Hairs)
+addHairs h n =
+  case M.lookup n (hairsIndex h) of
+    Just i -> (i, h)
+    Nothing -> (V.length (hairs h), Hairs (hairs h `V.snoc` n) (M.insert n (V.length (hairs h)) (hairsIndex h)))
+
+t3RecordsSink :: MonadIO m => Maybe String -> Hairs -> ConduitM T3Record Void m (Either IOError Hairs)
+t3RecordsSink game_dir hs =
+  go hs
   where
-  go = do
+  go h = do
     inp <- await
     case inp of
-      Nothing -> return Nothing
+      Nothing -> return $ Right h
       Just (T3Record (T3Mark NPC_) _ fields) -> do
         case nameAndHairs fields of
           Just (name, knam) -> do
             let file_path = getFullPath game_dir $ npcsFiles ++ T.unpack name
-            e <- liftIO $ tryIOError $ writeFile file_path $ T.unpack knam
+            let (i, hn) = addHairs h (T.unpack knam)
+            e <- liftIO $ tryIOError $ writeFile file_path $ "A1V1_Hairs_" ++ show i
             case e of
-              Left r -> return $ Just r
-              Right _ -> go
-          Nothing -> go
-      _ -> go
+              Left r -> return $ Left r
+              Right _ -> go hn
+          Nothing -> go h
+      _ -> go h
 
 nameAndHairs :: [T3Field] -> Maybe (Text, Text)
 nameAndHairs fields =
