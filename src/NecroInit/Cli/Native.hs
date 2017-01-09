@@ -184,17 +184,28 @@ t3RecordsSink game_dir =
     case inp of
       Nothing -> return Nothing
       Just (T3Record (T3Mark NPC_) _ fields) -> do
-        case catMaybes $ map asName fields of
-          (n : _) -> do
-            let file_path = getFullPath game_dir $ npcsFiles ++ T.unpack n
-            e <- liftIO $ tryIOError $ writeFile file_path $ T.unpack n
+        case nameAndHairs fields of
+          Just (name, knam) -> do
+            let file_path = getFullPath game_dir $ npcsFiles ++ T.unpack name
+            e <- liftIO $ tryIOError $ writeFile file_path $ T.unpack knam
             case e of
               Left r -> return $ Just r
               Right _ -> go
-          [] -> go
+          Nothing -> go
       _ -> go
-  asName (T3StringField (T3Mark NAME) n) = Just $ T.dropWhileEnd (== '\0') n
-  asName _ = Nothing
+
+nameAndHairs :: [T3Field] -> Maybe (Text, Text)
+nameAndHairs fields =
+  let name = listToMaybe $ catMaybes $ map asName fields in
+  let knam = listToMaybe $ catMaybes $ map asKnam fields in
+  case (name, knam) of
+    (Just n, Just k) -> Just (n, k)
+    _ -> Nothing
+  where
+    asName (T3StringField (T3Mark NAME) n) = Just $ T.dropWhileEnd (== '\0') n
+    asName _ = Nothing
+    asKnam (T3StringField (T3Mark KNAM) n) = Just $ T.dropWhileEnd (== '\0') n
+    asKnam _ = Nothing
 
 t3RecordsSource :: Monad m => String -> ConduitM S.ByteString T3Record m (Maybe IOError)
 t3RecordsSource file_name = do
