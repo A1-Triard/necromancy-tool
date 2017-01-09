@@ -236,9 +236,7 @@ generateHairsPlugin game_dir plugin_name hs = do
       ESP
       "A1"
       ["Файл с париками, сгенерированный A1_Necromancy_init.exe."]
-      [ T3FileRef "Morrowind.esm" 79764287
-      , T3FileRef "Tribunal.esm" 6616539
-      , T3FileRef "Bloodmoon.esm" 11799703
+      [ T3FileRef "Morrowind.esm\0" 79764287
       ]
   let records = V.ifoldl makePlugin [] hs
   let content = putT3FileSignature <> file_header <> B.concat [putT3Record x | x <- records]
@@ -246,6 +244,7 @@ generateHairsPlugin game_dir plugin_name hs = do
     tryIO $ B.hPut h content
     tryIO $ hSeek h AbsoluteSeek 320
     tryIO $ B.hPut h $ runPut $ putWord32le $ fromIntegral $ length records
+  tryIO $ setModificationTime file_path $ UTCTime (fromGregorian 2006 06 19) 0
   where
     makePlugin :: [T3Record] -> Int -> Text -> [T3Record]
     makePlugin records i n = makeBodyPart i n : makeArmor i : records
