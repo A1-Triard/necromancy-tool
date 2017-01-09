@@ -169,19 +169,14 @@ necroInitRun game_dir = do
   tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
   hr <- scanNPCs game_dir files
   hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
-  let (bad_hm, good_hm) = M.mapEither splitMap hm
-  if not $ M.null bad_hm
-    then throwE $ userError $ "Cannot find models for the following body parts: " ++ intercalate ", " [T.unpack (fst x) | x <- M.toList bad_hm] ++ "."
-    else generateHairsPlugin game_dir $ V.map (mapModl good_hm) hr
+  generateHairsPlugin game_dir $ V.map (mapModl hm) hr
   where
-    splitMap :: Maybe Text -> Either () Text
-    splitMap Nothing = Left ()
-    splitMap (Just modl) = Right modl
-    mapModl :: Map Text Text -> Text -> Text
+    mapModl :: Map Text (Maybe Text) -> Text -> Text
     mapModl m h =
       case M.lookup h m of
         Nothing -> error "mapModl"
-        Just x -> x
+        Just Nothing -> "b\\B_N_Wood Elf_M_Hair_06.NIF"
+        Just (Just x) -> x
 
 scanNPCs :: Maybe String -> [GameFile] -> ExceptT IOError IO (Vector Text)
 scanNPCs game_dir files =
