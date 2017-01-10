@@ -323,7 +323,7 @@ npcsSink game_dir hs =
       _ -> go h
 
 getFileName :: String -> String
-getFileName = intercalate "_" . take 2 . splitOn "'" . intercalate "_" . take 4 . splitOn " "
+getFileName = intercalate "_" . take 2 . splitOn "-" . intercalate "_" . take 2 . splitOn "'" . intercalate "_" . take 4 . splitOn " "
 
 getProperty :: T3Sign -> [T3Field] -> Maybe (Text, Text)
 getProperty s fields =
