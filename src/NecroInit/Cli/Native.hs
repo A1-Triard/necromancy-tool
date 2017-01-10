@@ -70,8 +70,10 @@ printErrorsAndExit error_text action = do
   case result of
     Left e -> do
       handle (\x -> let _ = x :: IOError in return ()) $ hPutStrLn stderr $ error_text e
+      stop
       exitFailure
-    Right _ ->
+    Right _ -> do
+      stop
       exitSuccess
 
 necroInitErrorText :: IOError -> String
@@ -182,13 +184,12 @@ getGameFileData game_dir file_name = do
 
 necroInitRun :: Maybe String -> String -> ExceptT IOError IO ()
 necroInitRun game_dir plugin_name = do
-  bracketE (return ()) (tryIO . const stop) $ \_ -> do
-    file_names <- getGameFiles game_dir
-    files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
-    tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
-    hr <- scanNPCs game_dir files
-    hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
-    generateHairsPlugin game_dir plugin_name $ V.map (mapModl hm) hr
+  file_names <- getGameFiles game_dir
+  files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
+  tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
+  hr <- scanNPCs game_dir files
+  hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
+  generateHairsPlugin game_dir plugin_name $ V.map (mapModl hm) hr
   where
     mapModl :: Map Text (Maybe Text) -> Text -> Text
     mapModl m h =
