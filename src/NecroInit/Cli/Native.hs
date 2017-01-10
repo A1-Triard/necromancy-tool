@@ -99,7 +99,7 @@ getFullPath (Just game_dir) path =
 
 stop :: IO ()
 stop = do
-  putStrLn "Press any key..."
+  hPutStrLn stderr "Press any key..."
   void $ c_getch
 
 foreign import ccall unsafe "conio.h getch"
@@ -346,7 +346,10 @@ t3RecordsSource file_name = do
       case r2 of
         Left e -> return $ Just e
         Right offset2 -> do
-          go $ runGetIncremental offset2 $ getT3Record False
+          end <- N.null
+          if end
+            then return Nothing
+            else go $ runGetIncremental offset2 $ getT3Record False
   where
     go (G.Partial p) = do
       inp <- await
@@ -381,66 +384,3 @@ skipGet file_name base_offset g = do
 formatError :: String -> ByteOffset -> Either String String -> IOError
 formatError name offset (Right e) = userError $ name ++ ": " ++ replace "{0}" (showHex offset "h") e
 formatError name offset (Left e) = userError $ name ++ ": " ++ "Internal error: " ++ showHex offset "h: " ++ e
-
-{-
-withBinaryInputFile :: FilePath -> (Handle -> ExceptT IOError IO a) -> ExceptT IOError IO a
-withBinaryInputFile "-" action = action stdin
-withBinaryInputFile name action = bracketE (tryIO $ openBinaryFile name ReadMode) (tryIO . hClose) action
-
-withBinaryOutputFile :: FilePath -> (Handle -> ExceptT IOError IO a) -> ExceptT IOError IO a
-withBinaryOutputFile "-" action = action stdout
-withBinaryOutputFile name action = bracketE (tryIO $ openBinaryFile name WriteMode) (tryIO . hClose) action
-
-withTextInputFile :: FilePath -> (Handle -> ExceptT IOError IO a) -> ExceptT IOError IO a
-withTextInputFile "-" action = action stdin
-withTextInputFile name action = bracketE (tryIO $ openFile name ReadMode) (tryIO . hClose) action
-
-withTextOutputFile :: FilePath -> (Handle -> ExceptT IOError IO a) -> ExceptT IOError IO a
-withTextOutputFile "-" action = action stdout
-withTextOutputFile name action = bracketE (tryIO $ openFile name WriteMode) (tryIO . hClose) action
-
-handleT3Error :: FilePath -> String -> IOError
-handleT3Error name e = userError $ showString name $ showString ": " e
-
-necroInitDisassembly :: Bool -> (T3Sign -> Bool) -> Verboser -> FilePath -> ExceptT IOError IO ()
-necroInitDisassembly adjust skip_record verbose name = do
-  output_name <- hoistEither $ getDisassembliedFileName name
-  tryIO $ verbose $ name ++ " -> " ++ output_name
-  r <-
-    withBinaryInputFile name $ \input -> do
-      withTextOutputFile output_name $ \output -> do
-        runConduit $ (N.sourceHandle input =$= disassembly adjust skip_record) `fuseUpstream` N.sinkHandle output
-  case r of
-    Right _ -> return ()
-    Left (offset, err) -> do
-      tryIO $ removeFile output_name
-      case err of
-        Right e -> throwE $ userError $ name ++ ": " ++ replace "{0}" (showHex offset "h") e
-        Left e -> throwE $ userError $ name ++ ": " ++ "Internal error: " ++ showHex offset "h: " ++ e
-
-necroInitAssemblyErrorText :: IOError -> String
-necroInitAssemblyErrorText e
-  | isUserError e = ioeGetErrorString e
-  | otherwise = ioeGetErrorString e
-
-necroInitAssembly :: Verboser -> FilePath -> ExceptT IOError IO ()
-necroInitAssembly verbose name = do
-  output_name <- hoistEither $ getAssembliedFileName name
-  tryIO $ verbose $ name ++ " -> " ++ output_name ++ ".es?"
-  r <-
-    withTextInputFile name $ \input -> do
-      withBinaryOutputFile (output_name ++ ".es_") $ \output -> do
-        r <- runConduit $ (N.sourceHandle input =$= assembly) `fuseUpstream` N.sinkHandle output
-        case r of
-          Left e -> return $ Left e
-          Right (file_type, n) -> do
-            tryIO $ hSeek output AbsoluteSeek 320
-            tryIO $ B.hPut output $ runPut $ putWord32le n
-            return $ Right file_type
-  case r of
-    Left e -> do
-      tryIO $ removeFile (output_name ++ ".es_")
-      throwE $ userError $ name ++ ": " ++ "Parse error: " ++ e
-    Right file_type -> do
-      tryIO $ renameFile (output_name ++ ".es_") (output_name ++ fileSuffix file_type)
--}

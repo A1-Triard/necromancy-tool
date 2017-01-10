@@ -1,7 +1,8 @@
-test_data/Data Files/MWSE
-test_data/Data Files/A1H
+/test_data/Data Files/MWSE
+/test_data/Data Files/A1H
 *.bsa
 *.esp
+!/test_data/Data Files/1.esp
 *.esm
 *.ess
 *.test
