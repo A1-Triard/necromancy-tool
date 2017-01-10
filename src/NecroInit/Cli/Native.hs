@@ -313,7 +313,7 @@ npcsSink game_dir hs =
       Just (T3Record (T3Mark NPC_) _ fields) -> do
         case getProperty (T3Mark KNAM) fields of
           Just (name, knam) -> do
-            let file_path = getFullPath game_dir $ npcsFiles ++ T.unpack name
+            let file_path = getFullPath game_dir $ npcsFiles ++ (getFileName $ T.unpack name)
             let (i, hn) = addHairs h knam
             e <- liftIO $ tryIOError $ writeFile file_path $ hairsPrefix ++ show i
             case e of
@@ -321,6 +321,9 @@ npcsSink game_dir hs =
               Right _ -> go hn
           Nothing -> go h
       _ -> go h
+
+getFileName :: String -> String
+getFileName = intercalate "_" . take 2 . splitOn "'" . intercalate "_" . take 4 . splitOn " "
 
 getProperty :: T3Sign -> [T3Field] -> Maybe (Text, Text)
 getProperty s fields =
