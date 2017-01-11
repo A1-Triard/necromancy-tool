@@ -242,32 +242,10 @@ generateHairsPlugin game_dir plugin_name hs = do
   let
     plugin_header =
       [ T3Record (T3Mark SCPT) 0
-        [ T3ScriptField (T3Mark SCHD) (T3ScriptHeader "A1V1_Hairs_sc" 1 1 0 96 11)
-        , T3BinaryField (T3Mark SCDT) (decodeLenient $ C.pack "BgECCSBzAQAgPCA1MAUBcwEACCBzAQAgMSArJAEJAQUBcwEAAiAwBgEBCSBYIBAgPT0gMSQBCQFlPxM4AAATOGwAAjwGAQEKIGwBACA+IDUwMCQBCQEROOgDAABkPgEB")
+        [ T3ScriptField (T3Mark SCHD) (T3ScriptHeader "A1V1_Hairs_sc" 0 0 0 2 0)
+        , T3BinaryField (T3Mark SCDT) (decodeLenient $ C.pack "AQE=")
         , T3MultilineField (T3Mark SCTX)
           [ "Begin A1V1_Hairs_sc"
-          , ""
-          , "short state"
-          , "long temp"
-          , ""
-          , "if ( state < 50 )"
-          , "\tset state to state + 1"
-          , "\treturn"
-          , "endif"
-          , ""
-          , "set state to 0"
-          , ""
-          , "if ( MenuMode == 1 )"
-          , "\treturn"
-          , "endif"
-          , ""
-          , "setx temp to xGetCondition"
-          , ""
-          , "if ( temp > 500 )"
-          , "\treturn"
-          , "endif"
-          , ""
-          , "xSetCondition 1000"
           , ""
           , "End"
           ]
