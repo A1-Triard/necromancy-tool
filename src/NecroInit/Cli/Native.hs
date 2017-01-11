@@ -260,10 +260,10 @@ generateHairsPlugin game_dir plugin_name hs = do
     makeArmor i =
       T3Record (T3Mark ARMO) 0
         [ T3StringField (T3Mark NAME) (T.pack $ hairsPrefix ++ show i ++ ['\0'])
-        , T3StringField (T3Mark MODL) "m\\misc_com_broom_01.nif\0"
-        , T3StringField (T3Mark FNAM) "Волосы\0"
-        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAM3MzD0AAAAAZAAAABkAAAAKAAAA")
-        , T3StringField (T3Mark ITEX) "m\\misc_com_broom_01.dds\0"
+        , T3StringField (T3Mark MODL) "blas\\A1_hair.nif\0"
+        , T3StringField (T3Mark FNAM) "Скальп\0"
+        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAAAAgD9kAAAA6AMAAEsAAAABAAAA")
+        , T3StringField (T3Mark ITEX) "blas\\A1_paric.dds\0"
         , T3ByteField (T3Mark INDX) 1
         , T3StringField (T3Mark BNAM) (T.pack $ hairsBodyPrefix ++ show i)
         ]
