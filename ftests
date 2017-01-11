@@ -27,7 +27,7 @@ if [ $res != 2676 ]; then
   exit 1
 fi
 size=$(wc -c < "Data Files/A1H.esp")
-if [ $size != 39385 ]; then
+if [ $size != 43178 ]; then
   echo $size
   exit 1
 fi

@@ -239,7 +239,41 @@ generateHairsPlugin game_dir plugin_name hs = do
       ["Файл с париками, сгенерированный A1_Necromancy_init.exe."]
       [ T3FileRef "Morrowind.esm\0" 79764287
       ]
-  let records = V.ifoldl makePlugin [] hs
+  let
+    plugin_header =
+      [ T3Record (T3Mark SCPT) 0
+        [ T3ScriptField (T3Mark SCHD) (T3ScriptHeader "A1V1_Hairs_sc" 1 1 0 96 11)
+        , T3BinaryField (T3Mark SCDT) (decodeLenient $ C.pack "BgECCSBzAQAgPCA1MAUBcwEACCBzAQAgMSArJAEJAQUBcwEAAiAwBgEBCSBYIBAgPT0gMSQBCQFlPxM4AAATOGwAAjwGAQEKIGwBACA+IDUwMCQBCQEROOgDAABkPgEB")
+        , T3MultilineField (T3Mark SCTX)
+          [ "Begin A1V1_Hairs_sc"
+          , ""
+          , "short state"
+          , "long temp"
+          , ""
+          , "if ( state < 50 )"
+          , "\tset state to state + 1"
+          , "\treturn"
+          , "endif"
+          , ""
+          , "set state to 0"
+          , ""
+          , "if ( MenuMode == 1 )"
+          , "\treturn"
+          , "endif"
+          , ""
+          , "setx temp to xGetCondition"
+          , ""
+          , "if ( temp > 500 )"
+          , "\treturn"
+          , "endif"
+          , ""
+          , "xSetCondition 1000"
+          , ""
+          , "End"
+          ]
+        ]
+      ]
+  let records = plugin_header ++ V.ifoldl makePlugin [] hs
   let content = putT3FileSignature <> file_header <> B.concat [putT3Record x | x <- records]
   bracketE (tryIO $ openBinaryFile file_path WriteMode) (tryIO . hClose) $ \h -> do
     tryIO $ B.hPut h content
@@ -262,7 +296,8 @@ generateHairsPlugin game_dir plugin_name hs = do
         [ T3StringField (T3Mark NAME) (T.pack $ hairsPrefix ++ show i ++ ['\0'])
         , T3StringField (T3Mark MODL) "blas\\A1_hair.nif\0"
         , T3StringField (T3Mark FNAM) "Скальп\0"
-        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAAAAgD8AAAAAAAAAAEsAAAABAAAA")
+        , T3StringField (T3Mark SCRI) "A1V1_Hairs_sc\0"
+        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAAAAgD8AAAAA6AMAAEsAAAABAAAA")
         , T3StringField (T3Mark ITEX) "blas\\A1_paric.dds\0"
         , T3ByteField (T3Mark INDX) 1
         , T3StringField (T3Mark BNAM) (T.pack $ hairsBodyPrefix ++ show i)
