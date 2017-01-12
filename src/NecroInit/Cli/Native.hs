@@ -295,7 +295,7 @@ generateHairsPlugin game_dir plugin_name hs = do
         , T3StringField (T3Mark MODL) "blas\\A1_hair.nif\0"
         , T3StringField (T3Mark FNAM) "Скальп\0"
         , T3StringField (T3Mark SCRI) "A1V1_Hairs_sc\0"
-        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAAAAgD8AAAAA6AMAAEsAAAABAAAA")
+        , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAAAAgD8AAAAA6AMAAEsAAAAKAAAA")
         , T3StringField (T3Mark ITEX) "blas\\A1_paric.dds\0"
         , T3ByteField (T3Mark INDX) 1
         , T3StringField (T3Mark BNAM) (T.pack $ getBodyPartID n)
