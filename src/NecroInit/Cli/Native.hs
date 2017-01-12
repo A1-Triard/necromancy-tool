@@ -188,19 +188,16 @@ necroInitRun game_dir plugin_name = do
   files <- (sort <$>) $ forM file_names $ getGameFileData game_dir
   tryIO $ createDirectoryIfMissing True $ getFullPath game_dir npcsDir
   hr <- scanNPCs game_dir files
-  hm <- scanBodyParts game_dir files $ M.fromList [(x, Nothing) | x <- V.toList hr]
-  generateHairsPlugin game_dir plugin_name $ V.map (mapModl hm) hr
+  hm <- scanBodyParts game_dir files $ M.fromList [(fst x, Nothing) | x <- M.toList hr]
+  generateHairsPlugin game_dir plugin_name $ M.map mapModl hm
   where
-    mapModl :: Map Text (Maybe Text) -> Text -> Text
-    mapModl m h =
-      case M.lookup h m of
-        Nothing -> error "mapModl"
-        Just Nothing -> "b\\B_N_Wood Elf_M_Hair_06.NIF"
-        Just (Just x) -> x
+    mapModl :: Maybe Text -> Text
+    mapModl Nothing = "b\\B_N_Wood Elf_M_Hair_06.NIF"
+    mapModl (Just x) = x
 
-scanNPCs :: Maybe String -> [GameFile] -> ExceptT IOError IO (Vector Text)
+scanNPCs :: Maybe String -> [GameFile] -> ExceptT IOError IO (Map Text ())
 scanNPCs game_dir files =
-  hairs <$> go files (Hairs V.empty M.empty)
+  go files M.empty
   where
     go [] hs = return hs
     go (file : tail) hs = do
@@ -228,7 +225,7 @@ scanBodyParts game_dir files p =
           (_, Left e) -> throwE e
       go tail hr
 
-generateHairsPlugin :: Maybe String -> String -> Vector Text -> ExceptT IOError IO ()
+generateHairsPlugin :: Maybe String -> String -> Map Text Text -> ExceptT IOError IO ()
 generateHairsPlugin game_dir plugin_name hs = do
   let file_path = getFullPath game_dir $ dataFiles ++ plugin_name
   let
@@ -274,7 +271,7 @@ generateHairsPlugin game_dir plugin_name hs = do
         , T3MultiStringField (T3Mark SCVR) ["state", "temp"]
         ]
       ]
-  let records = plugin_header ++ V.ifoldl makePlugin [] hs
+  let records = plugin_header ++ M.foldWithKey makePlugin [] hs
   let content = putT3FileSignature <> file_header <> B.concat [putT3Record x | x <- records]
   bracketE (tryIO $ openBinaryFile file_path WriteMode) (tryIO . hClose) $ \h -> do
     tryIO $ B.hPut h content
@@ -282,44 +279,33 @@ generateHairsPlugin game_dir plugin_name hs = do
     tryIO $ B.hPut h $ runPut $ putWord32le $ fromIntegral $ length records
   tryIO $ setModificationTime file_path $ UTCTime (fromGregorian 2006 06 19) 0
   where
-    makePlugin :: [T3Record] -> Int -> Text -> [T3Record]
-    makePlugin records i n = makeBodyPart i n : makeArmor i : records
-    makeBodyPart :: Int -> Text -> T3Record
-    makeBodyPart i n =
+    makePlugin :: Text -> Text -> [T3Record] -> [T3Record]
+    makePlugin n model records = makeBodyPart n model : makeArmor n : records
+    makeBodyPart :: Text -> Text -> T3Record
+    makeBodyPart n model =
       T3Record (T3Mark BODY) 0
-        [ T3StringField (T3Mark NAME) (T.pack $ hairsBodyPrefix ++ show i ++ ['\0'])
-        , T3StringField (T3Mark MODL) (n `T.snoc` '\0')
+        [ T3StringField (T3Mark NAME) (T.pack $ getBodyPartID n ++ ['\0'])
+        , T3StringField (T3Mark MODL) (model `T.snoc` '\0')
         , T3BinaryField (T3Mark BYDT) (decodeLenient $ C.pack "AQAAAg==")
         ]
-    makeArmor :: Int -> T3Record
-    makeArmor i =
+    makeArmor :: Text -> T3Record
+    makeArmor n =
       T3Record (T3Mark ARMO) 0
-        [ T3StringField (T3Mark NAME) (T.pack $ hairsPrefix ++ show i ++ ['\0'])
+        [ T3StringField (T3Mark NAME) (T.pack $ getArmorID n ++ ['\0'])
         , T3StringField (T3Mark MODL) "blas\\A1_hair.nif\0"
         , T3StringField (T3Mark FNAM) "Скальп\0"
         , T3StringField (T3Mark SCRI) "A1V1_Hairs_sc\0"
         , T3BinaryField (T3Mark AODT) (decodeLenient $ C.pack "AAAAAAAAgD8AAAAA6AMAAEsAAAABAAAA")
         , T3StringField (T3Mark ITEX) "blas\\A1_paric.dds\0"
         , T3ByteField (T3Mark INDX) 1
-        , T3StringField (T3Mark BNAM) (T.pack $ hairsBodyPrefix ++ show i)
+        , T3StringField (T3Mark BNAM) (T.pack $ getBodyPartID n)
         ]
 
-data Hairs = Hairs
-  { hairs :: Vector Text
-  , hairsIndex :: Map Text Int
-  }
-
-addHairs :: Hairs -> Text -> (Int, Hairs)
+addHairs :: Map Text () -> Text -> Map Text ()
 addHairs h n =
-  case M.lookup n (hairsIndex h) of
-    Just i -> (i, h)
-    Nothing -> (V.length (hairs h), Hairs (hairs h `V.snoc` n) (M.insert n (V.length (hairs h)) (hairsIndex h)))
-
-hairsPrefix :: String
-hairsPrefix = "A1V1_Hairs_"
-
-hairsBodyPrefix :: String
-hairsBodyPrefix = "A1V1_HairsBP_"
+  case M.lookup n h of
+    Just _ -> h
+    Nothing -> M.insert n () h
 
 bodyPartsSink :: MonadIO m => Map Text (Maybe Text) -> ConduitM T3Record Void m (Either IOError (Map Text (Maybe Text)))
 bodyPartsSink hs =
@@ -338,7 +324,7 @@ bodyPartsSink hs =
           Nothing -> go h
       _ -> go h
 
-npcsSink :: MonadIO m => Maybe String -> Hairs -> ConduitM T3Record Void m (Either IOError Hairs)
+npcsSink :: MonadIO m => Maybe String -> Map Text () -> ConduitM T3Record Void m (Either IOError (Map Text ()))
 npcsSink game_dir hs =
   go hs
   where
@@ -350,8 +336,8 @@ npcsSink game_dir hs =
         case getProperty (T3Mark KNAM) fields of
           Just (name, knam) -> do
             let file_path = getFullPath game_dir $ npcsFiles ++ (getFileName $ T.unpack name)
-            let (i, hn) = addHairs h knam
-            e <- liftIO $ tryIOError $ writeFile file_path $ hairsPrefix ++ show i
+            let hn = addHairs h knam
+            e <- liftIO $ tryIOError $ writeFile file_path $ getArmorID knam
             case e of
               Left r -> return $ Left r
               Right _ -> go hn
@@ -360,6 +346,12 @@ npcsSink game_dir hs =
 
 getFileName :: String -> String
 getFileName = intercalate "_" . take 2 . splitOn "-" . intercalate "_" . take 2 . splitOn "'" . intercalate "_" . take 4 . splitOn " "
+
+getBodyPartID :: Text -> String
+getBodyPartID = take 31 . ("A1V1B" ++) . replace " " "" . replace "'" "" . replace "_" "" . T.unpack
+
+getArmorID :: Text -> String
+getArmorID = take 31 . ("A1V1H" ++) . replace " " "" . replace "'" "" . replace "_" "" . T.unpack
 
 getProperty :: T3Sign -> [T3Field] -> Maybe (Text, Text)
 getProperty s fields =
