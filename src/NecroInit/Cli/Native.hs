@@ -233,7 +233,7 @@ generateHairsPlugin game_dir plugin_name hs = do
       1067869798
       ESP
       "A1"
-      ["Файл с париками, сгенерированный A1_Necromancy_init.exe."]
+      ["Файл с париками, сгенерированный A1_Necromancy_init.exe. Вспомогательный плагин для A1_Necromancy.esp."]
       [ T3FileRef "Morrowind.esm\0" 79764287
       ]
   let
