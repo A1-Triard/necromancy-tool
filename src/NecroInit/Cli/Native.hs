@@ -27,7 +27,7 @@ necroInitUsageErrorFooter
 
 data NecroInitOptions = NecroInitOptions
   { optRootDir :: Maybe String
-  , optPlugin :: String
+  , optHairsPlugin :: String
   , optShowVersion :: Bool
   , optShowHelp :: Bool
   }
@@ -35,7 +35,7 @@ data NecroInitOptions = NecroInitOptions
 defaultNecroInitOptions :: NecroInitOptions
 defaultNecroInitOptions = NecroInitOptions
   { optRootDir = Nothing
-  , optPlugin = "A1_Hairs_V1.esp"
+  , optHairsPlugin = "A1_Necromancy_Hairs.esp"
   , optShowVersion = False
   , optShowHelp = False
   }
@@ -43,7 +43,7 @@ defaultNecroInitOptions = NecroInitOptions
 necroInitOptionsDescr :: [OptDescr (NecroInitOptions -> NecroInitOptions)]
 necroInitOptionsDescr =
   [ Option ['i'] ["install-path"] (ReqArg (\i o -> o {optRootDir = Just i}) "DIR") "the game install path"
-  , Option ['p'] ["plugin-name"] (ReqArg (\p o -> o {optPlugin = p}) "NAME") "the plugin file name"
+  , Option ['H'] ["hairs-plugin"] (ReqArg (\p o -> o {optHairsPlugin = p}) "NAME") "hairs plugin file name"
   , Option ['V'] ["version"] (NoArg (\o -> o {optShowVersion = True})) "display the version number and exit"
   , Option ['h'] ["help"] (NoArg (\o -> o {optShowHelp = True})) "display this help and exit"
   ]
@@ -62,7 +62,7 @@ necroInit = do
       | optShowHelp options = putStrLn $ usageInfo necroInitHelpHeader necroInitOptionsDescr ++ necroInitHelpFooter
       | optShowVersion options = putStrLn $ "A1_Necromancy_init " ++ showVersion version
       | not $ null errors = hPutStrLn stderr $ concat errors ++ necroInitUsageErrorFooter
-      | otherwise = printErrorsAndExit necroInitErrorText $ necroInitRun (optRootDir options) (optPlugin options)
+      | otherwise = printErrorsAndExit necroInitErrorText $ necroInitRun (optRootDir options) (optHairsPlugin options)
 
 printErrorsAndExit :: (e -> String) -> ExceptT e IO () -> IO ()
 printErrorsAndExit error_text action = do

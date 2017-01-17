@@ -20,7 +20,7 @@ fi
 rm -rf "Data Files/MWSE"
 rm -f "Data Files/A1H.esp"
 dd if=/dev/zero of="Data Files/A1H.esp" bs=1 count=0 seek=100K
-stack exec -- A1_Necromancy_init -p A1H.esp || exit 1
+stack exec -- A1_Necromancy_init -H A1H.esp || exit 1
 res=$(find "Data Files/MWSE" -type f | wc -l)
 if [ $res != 2676 ]; then
   echo "$res"
