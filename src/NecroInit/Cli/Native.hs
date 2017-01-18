@@ -335,7 +335,7 @@ npcsSink game_dir hs =
         let name = fromMaybe "" $ getStringProperty (T3Mark NAME) fields
         let knam = fromMaybe "" $ getStringProperty (T3Mark KNAM) fields
         let fnam = fromMaybe "" $ getStringProperty (T3Mark FNAM) fields
-        let file_path = getFullPath game_dir $ npcsFiles ++ show (getHashCode name)
+        let file_path = getFullPath game_dir $ npcsFiles ++ replace "-" "0" (show (getHashCode name))
         let hn = addHairs h knam
         e <- liftIO $ tryIOError $ writeFile file_path $ T.unpack fnam ++ ['\0'] ++ getArmorID knam
         case e of
@@ -352,7 +352,7 @@ getBodyPartID = take 31 . ("A1V1B" ++) . replace " " "" . replace "'" "" . repla
 getArmorID :: Text -> String
 getArmorID = take 31 . ("A1V1H" ++) . replace " " "" . replace "'" "" . replace "_" "" . T.unpack
 
-getHashCode :: Text -> Word32
+getHashCode :: Text -> Int32
 getHashCode = T.foldl (\h c -> h * 1664525 + fromIntegral (ord c) + 1013904223) 0
 
 getStringProperty :: T3Sign -> [T3Field] -> Maybe Text
