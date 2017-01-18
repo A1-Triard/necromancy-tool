@@ -316,12 +316,11 @@ bodyPartsSink hs =
     case inp of
       Nothing -> return $ Right h
       Just (T3Record (T3Mark BODY) _ fields) -> do
-        case getProperty (T3Mark MODL) fields of
-          Just (name, modl) -> do
-            case M.lookup name h of
-              Nothing -> go h
-              Just _ -> go $ M.update (const $ Just $ Just modl) name h
+        let name = fromMaybe "" $ getStringProperty (T3Mark NAME) fields
+        let modl = fromMaybe "b\\B_N_Wood Elf_M_Hair_06.NIF" $ getStringProperty (T3Mark MODL) fields
+        case M.lookup name h of
           Nothing -> go h
+          Just _ -> go $ M.update (const $ Just $ Just modl) name h
       _ -> go h
 
 npcsSink :: MonadIO m => Maybe String -> Map Text () -> ConduitM T3Record Void m (Either IOError (Map Text ()))
@@ -333,15 +332,14 @@ npcsSink game_dir hs =
     case inp of
       Nothing -> return $ Right h
       Just (T3Record (T3Mark NPC_) _ fields) -> do
-        case getProperty (T3Mark KNAM) fields of
-          Just (name, knam) -> do
-            let file_path = getFullPath game_dir $ npcsFiles ++ (getFileName $ T.unpack name)
-            let hn = addHairs h knam
-            e <- liftIO $ tryIOError $ writeFile file_path $ getArmorID knam
-            case e of
-              Left r -> return $ Left r
-              Right _ -> go hn
-          Nothing -> go h
+        let name = fromMaybe "" $ getStringProperty (T3Mark NAME) fields
+        let knam = fromMaybe "" $ getStringProperty (T3Mark KNAM) fields
+        let file_path = getFullPath game_dir $ npcsFiles ++ (getFileName $ T.unpack name)
+        let hn = addHairs h knam
+        e <- liftIO $ tryIOError $ writeFile file_path $ getArmorID knam
+        case e of
+          Left r -> return $ Left r
+          Right _ -> go hn
       _ -> go h
 
 getFileName :: String -> String
@@ -353,20 +351,14 @@ getBodyPartID = take 31 . ("A1V1B" ++) . replace " " "" . replace "'" "" . repla
 getArmorID :: Text -> String
 getArmorID = take 31 . ("A1V1H" ++) . replace " " "" . replace "'" "" . replace "_" "" . T.unpack
 
-getProperty :: T3Sign -> [T3Field] -> Maybe (Text, Text)
-getProperty s fields =
-  let name = listToMaybe $ catMaybes $ map asName fields in
-  let knam = listToMaybe $ catMaybes $ map asKnam fields in
-  case (name, knam) of
-    (Just n, Just k) -> Just (n, k)
-    _ -> Nothing
+getStringProperty :: T3Sign -> [T3Field] -> Maybe Text
+getStringProperty s fields =
+  listToMaybe $ catMaybes $ map asStringField fields
   where
-    asName (T3StringField (T3Mark NAME) n) = Just $ T.dropWhileEnd (== '\0') n
-    asName _ = Nothing
-    asKnam (T3StringField ss n)
+    asStringField (T3StringField ss n)
       | ss == s = Just $ T.dropWhileEnd (== '\0') n
       | otherwise = Nothing
-    asKnam _ = Nothing
+    asStringField _ = Nothing
 
 t3RecordsSource :: Monad m => String -> ConduitM S.ByteString T3Record m (Maybe IOError)
 t3RecordsSource file_name = do
