@@ -337,7 +337,11 @@ npcsSink game_dir hs =
         let fnam = fromMaybe "" $ getStringProperty (T3Mark FNAM) fields
         let file_path = getFullPath game_dir $ npcsFiles ++ replace "-" "0" (show (getHashCode name))
         let hn = addHairs h knam
-        e <- liftIO $ tryIOError $ writeFile file_path $ T.unpack fnam ++ ['\0'] ++ getArmorID knam
+        e <- liftIO $ runExceptT $ bracketE (tryIO $ openBinaryFile file_path WriteMode) (tryIO . hClose) $ \hnpc -> do
+          tryIO $ B.hPutStr hnpc $ B.pack [78, 80]
+          tryIO $ B.hPutStr hnpc $ t3StringValue fnam
+          tryIO $ B.hPutStr hnpc $ B.pack [0]
+          tryIO $ hPutStr hnpc $ getArmorID knam
         case e of
           Left r -> return $ Left r
           Right _ -> go hn
