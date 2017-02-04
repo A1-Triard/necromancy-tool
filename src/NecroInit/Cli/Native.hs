@@ -335,6 +335,7 @@ npcsSink game_dir hs =
         let name = fromMaybe "" $ getStringProperty (T3Mark NAME) fields
         let knam = fromMaybe "" $ getStringProperty (T3Mark KNAM) fields
         let fnam = fromMaybe "" $ getStringProperty (T3Mark FNAM) fields
+        let spells = getSpells fields
         let file_path = getFullPath game_dir $ npcsFiles ++ replace "-" "0" (show (getHashCode name))
         let hn = addHairs h knam
         e <- liftIO $ runExceptT $ bracketE (tryIO $ openBinaryFile file_path WriteMode) (tryIO . hClose) $ \hnpc -> do
@@ -342,6 +343,9 @@ npcsSink game_dir hs =
           tryIO $ B.hPutStr hnpc $ t3StringValue fnam
           tryIO $ B.hPutStr hnpc $ B.pack [0]
           tryIO $ hPutStr hnpc $ getArmorID knam
+          forM_ spells $ \s -> do
+            tryIO $ B.hPutStr hnpc $ B.pack [0, 83, 80]
+            tryIO $ hPutStr hnpc $ T.unpack s
         case e of
           Left r -> return $ Left r
           Right _ -> go hn
@@ -366,6 +370,13 @@ getStringProperty s fields =
     asStringField (T3StringField ss n)
       | ss == s = Just $ T.dropWhileEnd (== '\0') n
       | otherwise = Nothing
+    asStringField _ = Nothing
+
+getSpells :: [T3Field] -> [Text]
+getSpells fields =
+  catMaybes $ map asStringField fields
+  where
+    asStringField (T3StringField (T3Mark NPCS) n) = Just $ T.dropWhileEnd (== '\0') n
     asStringField _ = Nothing
 
 t3RecordsSource :: Monad m => String -> ConduitM S.ByteString T3Record m (Maybe IOError)
