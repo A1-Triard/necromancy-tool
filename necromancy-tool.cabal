@@ -7,17 +7,15 @@ license:             Apache
 license-file:        LICENSE
 author:              Warlock <internalmike@gmail.com>
 maintainer:          Warlock <internalmike@gmail.com>
-copyright:           2016 Warlock
-category:            Web
+copyright:           2016, 2017 Warlock <internalmike@gmail.com>
+category:            CLI
 build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
 
 library
   hs-source-dirs: src
-  exposed-modules: Control.Error.Extensions
-                 , NecroInit.Cli
-                 , NecroInit.Cli.Native
+  exposed-modules: NecroInit.Cli
   other-modules: Paths_necromancy_tool
   default-extensions: CPP
                     , TemplateHaskell
@@ -64,10 +62,12 @@ library
                , bytestring
                , conduit
                , conduit-combinators
+               , conduit-extra
                , containers
                , data-binary-ieee754
                , directory
                , errors
+               , errors-ext
                , monad-loops
                , mono-traversable
                , semigroups
