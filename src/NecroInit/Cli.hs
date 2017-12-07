@@ -247,16 +247,19 @@ generateHairsPlugin :: Maybe String -> String -> Map Text Text -> ExceptT IOErro
 generateHairsPlugin game_dir plugin_name hs = do
   let file_path = getFullPath game_dir $ dataFiles ++ plugin_name
   let
-    file_header = putT3FileHeader $ T3FileHeader
-      1067869798
-      ESP
-      "A1"
-      ["Файл с париками, сгенерированный A1_Necromancy_init.exe. Вспомогательный плагин для A1_Necromancy.esp."]
-      [ T3FileRef "Morrowind.esm\0" 79764287
+    file_header = putT3Record $ T3Record (T3Mark TES3) t3FlagsEmpty
+      [ T3HeaderField (T3Mark HEDR) (T3FileHeader
+        1067869798
+        ESP
+        "A1"
+        ["Файл с париками, сгенерированный A1_Necromancy_init.exe. Вспомогательный плагин для A1_Necromancy.esp."]
+        )
+      , T3StringField (T3Mark MAST) "Morrowind.esm\0"
+      , T3LongField (T3Mark DATA) 79764287
       ]
   let
     plugin_header =
-      [ T3Record (T3Mark SCPT) 0
+      [ T3Record (T3Mark SCPT) t3FlagsEmpty
         [ T3ScriptField (T3Mark SCHD) (T3ScriptHeader "A1V1_Hairs_sc" 1 1 0 96 11)
         , T3BinaryField (T3Mark SCDT) (decodeLenient $ C.pack "BgECCSBzAQAgPCA1MAUBcwEACCBzAQAgMSArJAEJAQUBcwEAAiAwBgEBCSBYIBAgPT0gMSQBCQFlPxM4AAATOGwAAjwGAQEKIGwBACA+IDUwMCQBCQEROOgDAABkPgEB")
         , T3MultilineField (T3Mark SCTX)
@@ -290,7 +293,7 @@ generateHairsPlugin game_dir plugin_name hs = do
         ]
       ]
   let records = plugin_header ++ M.foldWithKey makePlugin [] hs
-  let content = putT3FileSignature <> file_header <> B.concat [putT3Record x | x <- records]
+  let content = file_header <> B.concat [putT3Record x | x <- records]
   bracketE (tryIO $ openBinaryFile file_path WriteMode) (tryIO . hClose) $ \h -> do
     tryIO $ B.hPut h content
     tryIO $ hSeek h AbsoluteSeek 320
@@ -301,14 +304,14 @@ generateHairsPlugin game_dir plugin_name hs = do
     makePlugin n model records = makeBodyPart n model : makeArmor n : records
     makeBodyPart :: Text -> Text -> T3Record
     makeBodyPart n model =
-      T3Record (T3Mark BODY) 0
+      T3Record (T3Mark BODY) t3FlagsEmpty
         [ T3StringField (T3Mark NAME) (T.pack $ getBodyPartID n ++ ['\0'])
         , T3StringField (T3Mark MODL) (model `T.snoc` '\0')
         , T3BinaryField (T3Mark BYDT) (decodeLenient $ C.pack "AQAAAg==")
         ]
     makeArmor :: Text -> T3Record
     makeArmor n =
-      T3Record (T3Mark ARMO) 0
+      T3Record (T3Mark ARMO) t3FlagsEmpty
         [ T3StringField (T3Mark NAME) (T.pack $ getArmorID n ++ ['\0'])
         , T3StringField (T3Mark MODL) "blas\\A1_hair.nif\0"
         , T3StringField (T3Mark FNAM) "Скальп\0"
@@ -396,18 +399,10 @@ getSpells fields =
 
 t3RecordsSource :: Monad m => String -> ConduitM S.ByteString T3Record m (Maybe IOError)
 t3RecordsSource file_name = do
-  r1 <- skipGet file_name 0 getT3FileSignature
-  case r1 of
-    Left e -> return $ Just e
-    Right offset1 -> do
-      r2 <- skipGet file_name offset1 getT3FileHeader
-      case r2 of
-        Left e -> return $ Just e
-        Right offset2 -> do
-          end <- N.null
-          if end
-            then return Nothing
-            else go $ runGetIncremental offset2 $ getT3Record False
+  end <- N.null
+  if end
+    then return Nothing
+    else go $ runGetIncremental 0 $ getT3Record False
   where
     go (G.Partial p) = do
       inp <- await
@@ -424,21 +419,6 @@ t3RecordsSource file_name = do
     go (G.Fail _ offset err) = do
       return $ Just $ formatError file_name offset err
 
-skipGet :: Monad m => String -> ByteOffset -> Get String a -> ConduitM S.ByteString r m (Either IOError ByteOffset)
-skipGet file_name base_offset g = do
-  go $ runGetIncremental base_offset g
-  where
-    go (G.Partial p) = do
-      inp <- await
-      go $ p inp
-    go (G.Done unused offset _) = do
-      if SB.null unused
-        then return ()
-        else leftover unused
-      return $ Right offset
-    go (G.Fail _ offset err) = do
-      return $ Left $ formatError file_name offset err
-
-formatError :: String -> ByteOffset -> Either String String -> IOError
-formatError name offset (Right e) = userError $ name ++ ": " ++ replace "{0}" (showHex offset "h") e
+formatError :: String -> ByteOffset -> Either String (ByteOffset -> String) -> IOError
+formatError name offset (Right e) = userError $ name ++ ": " ++ e offset
 formatError name offset (Left e) = userError $ name ++ ": " ++ "Internal error: " ++ showHex offset "h: " ++ e
